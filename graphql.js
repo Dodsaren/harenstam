@@ -3,28 +3,63 @@ const { gql } = require('apollo-server-koa')
 const {
   getQuiz,
   getQuestions,
+  getQuestionsByQuizId,
   getOptions,
   getSolutions,
+  insertQuestion,
+  insertQuiz,
 } = require('./dbOperations')
 
 const typeDefs = gql`
   type Query {
-    quiz(id: Int): [Quiz]
-    questions: [Question]
+    quiz(id: ID): [Quiz]
+    questions(id: ID): [Question]
   }
 
   type Quiz {
-    id: Int
+    id: ID
     label: String
     questions_order: [Int]
+    questions_order_type: String
     questions: [Question]
   }
 
   type Question {
-    id: Int
+    id: ID
     label: String
     options: [String]
     solutions: [Int]
+  }
+
+  type Mutation {
+    createQuestion(input: CreateQuestionInput): CreateQuestionPayload
+    createQuiz(input: CreateQuizInput): CreateQuizPayload
+  }
+
+  input CreateQuestionInput {
+    label: String
+    options: [String]
+    solutions: [Int]
+  }
+
+  type CreateQuestionPayload {
+    questions: [Question]
+  }
+
+  input CreateQuizInput {
+    label: String
+    questionIds: [ID]
+    questions_order_type: QuestionsOrderType
+  }
+
+  enum QuestionsOrderType {
+    ordered
+    unordered
+    random
+  }
+
+  type CreateQuizPayload {
+    quiz: [Quiz]
   }
 `
 
@@ -32,15 +67,29 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     quiz: (_, { id }) => getQuiz(id),
+    questions: (_, { id }) => getQuestions(id),
+  },
+
+  Mutation: {
+    createQuestion: (_, args) => insertQuestion(args.input),
+    createQuiz: (_, args) => insertQuiz(args.input),
   },
 
   Quiz: {
-    questions: ({ id }) => getQuestions(id),
+    questions: ({ id }) => getQuestionsByQuizId(id),
   },
 
   Question: {
     options: ({ id }) => getOptions(id),
     solutions: ({ id }) => getSolutions(id),
+  },
+
+  CreateQuizPayload: {
+    quiz: ({ id }) => getQuiz(id),
+  },
+
+  CreateQuestionPayload: {
+    questions: ({ id }) => getQuestions(id),
   },
 }
 
