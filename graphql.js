@@ -7,7 +7,7 @@ const {
   getOptions,
   getSolutions,
   insertQuestion,
-  insertQuiz,
+  createQuiz,
 } = require('./dbOperations')
 
 const typeDefs = gql`
@@ -72,7 +72,7 @@ const resolvers = {
 
   Mutation: {
     createQuestion: (_, args) => insertQuestion(args.input),
-    createQuiz: (_, args) => insertQuiz(args.input),
+    createQuiz: (_, args) => createQuiz(args.input),
   },
 
   Quiz: {

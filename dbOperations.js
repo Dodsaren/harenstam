@@ -63,27 +63,43 @@ function insertQuestion({ label, options, solutions }) {
   ).then(res => res[0])
 }
 
-async function insertQuiz({ label, questionIds, questions_order_type }) {
+async function createQuiz({ label, questionIds, questions_order_type }) {
   try {
-    const rows = await execute(
-      'INSERT INTO quiz (label, questions_order, questions_order_type) VALUES($1, $2, $3) RETURNING *',
-      [label, questionIds, questions_order_type],
-    )
-    const id = rows[0].id
-    await Promise.all(
-      questionIds.map(qid =>
-        execute(
-          'INSERT INTO quiz_question (quiz_id, question_id) VALUES($1, $2)',
-          [id, qid],
-        ),
-      ),
-    )
-    console.log(rows[0])
-    return rows[0]
+    const quiz = await insertQuiz({
+      label,
+      questionIds,
+      questions_order_type,
+    }).then(res => res[0])
+    const relations = await insertQuizQuestionsRelations({
+      quizId: quiz.id,
+      questionIds,
+    })
+    console.log('quiz', quiz)
+    console.log('relations', relations)
+    return quiz
   } catch (err) {
     console.log('INSERT QUIZ ERROR:', err)
+    // maybeRemoveQuiz() ??
     return err
   }
+}
+
+function insertQuiz({ label, questionIds, questions_order_type }) {
+  return execute(
+    'INSERT INTO quiz (label, questions_order, questions_order_type) VALUES($1, $2, $3) RETURNING *',
+    [label, questionIds, questions_order_type],
+  )
+}
+
+function insertQuizQuestionsRelations({ quizId, questionIds }) {
+  return Promise.all(
+    questionIds.map(qid =>
+      execute(
+        'INSERT INTO quiz_question (quiz_id, question_id) VALUES($1, $2) RETURNING *',
+        [quizId, qid],
+      ),
+    ),
+  )
 }
 
 module.exports = {
@@ -93,5 +109,5 @@ module.exports = {
   getOptions,
   getSolutions,
   insertQuestion,
-  insertQuiz,
+  createQuiz,
 }
