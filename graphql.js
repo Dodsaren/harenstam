@@ -8,7 +8,7 @@ const {
   getSolutions,
   insertQuestion,
   createQuiz,
-} = require('./dbOperations')
+} = require('./database/operations')
 
 const typeDefs = gql`
   type Query {
