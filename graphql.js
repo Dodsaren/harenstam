@@ -8,6 +8,7 @@ const {
   getSolutions,
   insertQuestion,
   createQuiz,
+  updateQuiz,
 } = require('./database/operations')
 
 const typeDefs = gql`
@@ -34,12 +35,13 @@ const typeDefs = gql`
   type Mutation {
     createQuestion(input: CreateQuestionInput): CreateQuestionPayload
     createQuiz(input: CreateQuizInput): CreateQuizPayload
+    updateQuiz(input: UpdateQuizInput): UpdateQuizPayload
   }
 
   input CreateQuestionInput {
-    label: String
-    options: [String]
-    solutions: [Int]
+    label: String!
+    options: [String]!
+    solutions: [Int]!
   }
 
   type CreateQuestionPayload {
@@ -47,19 +49,30 @@ const typeDefs = gql`
   }
 
   input CreateQuizInput {
+    label: String!
+    questionIds: [ID]!
+    questions_order_type: QuestionsOrderType
+  }
+
+  type CreateQuizPayload {
+    quiz: Quiz
+  }
+
+  input UpdateQuizInput {
+    id: ID!
     label: String
     questionIds: [ID]
-    questions_order_type: QuestionsOrderType
+    questions_order_type: String
+  }
+
+  type UpdateQuizPayload {
+    quiz: Quiz
   }
 
   enum QuestionsOrderType {
     ordered
     unordered
     random
-  }
-
-  type CreateQuizPayload {
-    quiz: [Quiz]
   }
 `
 
@@ -73,6 +86,7 @@ const resolvers = {
   Mutation: {
     createQuestion: (_, args) => insertQuestion(args.input),
     createQuiz: (_, args) => createQuiz(args.input),
+    updateQuiz: (_, args) => updateQuiz(args.input),
   },
 
   Quiz: {
@@ -85,7 +99,11 @@ const resolvers = {
   },
 
   CreateQuizPayload: {
-    quiz: ({ id }) => getQuiz(id),
+    quiz: ({ id }) => getQuiz(id).then(x => x[0]),
+  },
+
+  UpdateQuizPayload: {
+    quiz: ({ id }) => getQuiz(id).then(x => x[0]),
   },
 
   CreateQuestionPayload: {

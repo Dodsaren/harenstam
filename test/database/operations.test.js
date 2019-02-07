@@ -156,6 +156,28 @@ Feature('Database operations', () => {
       const solutions = await getSolutions(created.id)
       expect(solutions).to.eql([2])
     })
+
+    let updated
+    When.skip('updating a question', async () => {
+      updated = await updateQuestion({
+        id: 1,
+        label: 'Vad är det för fråga?',
+        options: ['En bra', 'En dålig', 'En hyfsad', 'En fantastisk'],
+        solutions: [3],
+        categoryId: 2,
+      })
+    })
+
+    Then.skip('that question should be updated', async () => {
+      const updatedQuestion = getQuestion(updated.id)
+      expect(updatedQuestion).to.eql({
+        id: 1,
+        label: 'Vad är det för fråga?',
+        options: ['En bra', 'En dålig', 'En hyfsad', 'En fantastisk'],
+        solutions: [3],
+        categoryId: 2,
+      })
+    })
   })
 })
 

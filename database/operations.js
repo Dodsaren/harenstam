@@ -89,7 +89,7 @@ async function updateQuiz({ id, label, questionIds, questions_order_type }) {
       [id, questionIds],
     )
     await client.query('COMMIT')
-    return 'success'
+    return { id }
   } catch (err) {
     await client.query('ROLLBACK')
     console.log('ERROR UPDATING QUIZ', err)
