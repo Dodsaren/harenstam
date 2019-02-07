@@ -1,8 +1,5 @@
 'use strict'
 
-require('dotenv').config()
-console.log(process.env.NODE_ENV)
-
 const expect = require('chai').expect
 const execSync = require('child_process').execSync
 
@@ -51,7 +48,7 @@ Feature('Database operations', () => {
     })
 
     let created
-    When('inserting a quiz', async () => {
+    When('creating a quiz', async () => {
       created = await createQuiz({
         label: 'etikett',
         questionIds: [1, 2, 3],
@@ -59,7 +56,7 @@ Feature('Database operations', () => {
       })
     })
 
-    Then('that quiz should be inserted', async () => {
+    Then('that quiz should be "gettable"', async () => {
       const quiz = await getQuiz(created.id)
       expect(quiz[0]).to.eql({
         id: created.id,
