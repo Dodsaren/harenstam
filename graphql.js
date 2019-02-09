@@ -7,8 +7,11 @@ const {
   getOptions,
   getSolutions,
   insertQuestion,
+  updateQuestion,
+  deleteQuestion,
   createQuiz,
   updateQuiz,
+  deleteQuiz,
 } = require('./database/operations')
 
 const typeDefs = gql`
@@ -23,6 +26,7 @@ const typeDefs = gql`
     questions_order: [Int]
     questions_order_type: String
     questions: [Question]
+    created: String
   }
 
   type Question {
@@ -34,14 +38,46 @@ const typeDefs = gql`
 
   type Mutation {
     createQuestion(input: CreateQuestionInput): CreateQuestionPayload
+    updateQuestion(input: UpdateQuestionInput): UpdateQuestionPayload
+    deleteQuestion(input: DeleteQuestionInput): DeleteQuestionPayload
     createQuiz(input: CreateQuizInput): CreateQuizPayload
     updateQuiz(input: UpdateQuizInput): UpdateQuizPayload
+    deleteQuiz(input: DeleteQuizInput): DeleteQuizPayload
+  }
+
+  type UpdateQuestionPayload {
+    question: Question
+  }
+
+  input UpdateQuestionInput {
+    id: ID!
+    label: String
+    options: [String]
+    optionsSolutions: [Int]
+    freetextSolutions: [String]
+  }
+
+  input DeleteQuestionInput {
+    id: ID!
+  }
+
+  type DeleteQuestionPayload {
+    success: String
+  }
+
+  input DeleteQuizInput {
+    id: ID!
+  }
+
+  type DeleteQuizPayload {
+    success: String
   }
 
   input CreateQuestionInput {
     label: String!
     options: [String]!
-    solutions: [Int]!
+    optionsSolutions: [Int]!
+    freetextSolutions: [String]
   }
 
   type CreateQuestionPayload {
@@ -85,8 +121,16 @@ const resolvers = {
 
   Mutation: {
     createQuestion: (_, args) => insertQuestion(args.input),
+    updateQuestion: (_, args) =>
+      updateQuestion(args.input).then(res => ({
+        question: res[0],
+      })),
+    deleteQuestion: (_, args) =>
+      deleteQuestion(args.input.id).then(() => ({ success: 'Gick bra' })),
     createQuiz: (_, args) => createQuiz(args.input),
     updateQuiz: (_, args) => updateQuiz(args.input),
+    deleteQuiz: (_, args) =>
+      deleteQuiz(args.input.id).then(() => ({ success: 'Gick bra' })),
   },
 
   Quiz: {

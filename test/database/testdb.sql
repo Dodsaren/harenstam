@@ -74,8 +74,11 @@ CREATE TABLE public.question (
     id integer NOT NULL,
     label text,
     options text[],
-    solutions integer[],
-    category_id integer
+    options_solutions integer[],
+    free_text_solutions text[],
+    category_id integer,
+    created timestamp,
+    updated timestamp
 );
 
 
@@ -111,7 +114,9 @@ CREATE TABLE public.quiz (
     id integer NOT NULL,
     label text,
     questions_order integer[],
-    questions_order_type public.order_type DEFAULT 'unordered'::public.order_type
+    questions_order_type public.order_type DEFAULT 'unordered'::public.order_type,
+    created timestamp,
+    updated timestamp
 );
 
 
@@ -217,8 +222,8 @@ COPY public.category (id, label) FROM stdin;
 -- Data for Name: question; Type: TABLE DATA; Schema: public; Owner: jim.nilsson
 --
 
-COPY public.question (id, label, options, solutions, category_id) FROM stdin;
-1	Hur många bultar finns det i Ölandsbron?	{143,234,"2 345 654",1337}	{2}	1
+COPY public.question (id, label, options, options_solutions, category_id) FROM stdin;
+1	Hur många bultar finns det i Ölandsbron?	{143,234,"2 345 654",1337}	{0}	1
 2	Vad är det bästa med vintern?	{"Att man kan bygga snögrottor","De fina färgerna","Den kalla temperaturen","Att man kan åka skidor"}	{1}	2
 3	Fråga nummer 3	{"Svar nummer 1","Svar nummer 2","Svar nummer 3","Svar nummer 4"}	{2}	3
 4	Hur många bultar finns det i Ölandsbron?	{143,234,"2 345 654",1337}	{2}	1
