@@ -1,7 +1,7 @@
 require('dotenv').config()
 const Koa = require('koa')
 const { ApolloServer } = require('apollo-server-koa')
-const { typeDefs, resolvers } = require('./graphql')
+const { typeDefs, resolvers } = require('./src/graphql')
 
 const app = new Koa()
 

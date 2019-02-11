@@ -5,7 +5,7 @@ const expect = chai.expect
 const chaiExclude = require('chai-exclude')
 chai.use(chaiExclude)
 const execSync = require('child_process').execSync
-const { pool } = require('../../database/database')
+const { pool } = require('../../src/database/database')
 const {
   getQuiz,
   getQuestionsByQuizId,
@@ -18,7 +18,7 @@ const {
   updateQuestion,
   deleteQuiz,
   deleteQuestion,
-} = require('../../database/operations')
+} = require('../../src/database/operations')
 
 Feature('Database operations', () => {
   before(prepareTempDatabase)

@@ -106,7 +106,7 @@ async function updateQuestion({
     updated = current_timestamp
     WHERE id = $6 RETURNING *`,
     [
-      decideStringUpdateValue(q.label, label),
+      label || q.label,
       decideArrayUpdateValue(q.options, options),
       decideArrayUpdateValue(q.options_solutions, optionsSolutions),
       decideArrayUpdateValue(q.free_text_solutions, freetextSolutions),
@@ -120,9 +120,9 @@ async function updateQuiz({ id, label, questionIds, questions_order_type }) {
   const quiz = await getQuiz(id).then(res => res[0])
   if (!quiz) throw new Error('Quiz not found, abort update')
   const params = [
-    decideStringUpdateValue(quiz.label, label),
+    label || quiz.label,
     decideArrayUpdateValue(quiz.questions_order, questionIds),
-    decideStringUpdateValue(quiz.questions_order_type, questions_order_type),
+    questions_order_type || quiz.questions_order_type,
     id,
   ]
   const client = await pool.connect()
@@ -168,10 +168,6 @@ function deleteQuestion(id) {
 
 function decideArrayUpdateValue(o, n) {
   return n && n.length > 0 ? n : o
-}
-
-function decideStringUpdateValue(o, n) {
-  return n && o !== n ? n : o
 }
 
 module.exports = {
