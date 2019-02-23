@@ -274,7 +274,7 @@ Feature('Database operations', () => {
 
 function prepareTempDatabase() {
   execSync('createdb testdb')
-  execSync('psql -d testdb -f ./test/database/testdb2.sql')
+  execSync('psql -d testdb -f ./test/database/testdb.sql')
 }
 
 async function dropTempDatabase() {
