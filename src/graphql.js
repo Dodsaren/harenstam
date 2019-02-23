@@ -5,7 +5,8 @@ const {
   getQuestions,
   getQuestionsByQuizId,
   getOptions,
-  getSolutions,
+  getOptionSolutions,
+  getFreetextSolutions,
   insertQuestion,
   updateQuestion,
   deleteQuestion,
@@ -33,7 +34,8 @@ const typeDefs = gql`
     id: ID
     label: String
     options: [String]
-    solutions: [Int]
+    optionSolutions: [Int]
+    freetextSolutions: [String]
   }
 
   type Mutation {
@@ -139,7 +141,8 @@ const resolvers = {
 
   Question: {
     options: ({ id }) => getOptions(id),
-    solutions: ({ id }) => getSolutions(id),
+    optionSolutions: ({ id }) => getOptionSolutions(id),
+    freetextSolutions: ({ id }) => getFreetextSolutions(id),
   },
 
   CreateQuizPayload: {

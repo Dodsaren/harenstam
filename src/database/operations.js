@@ -44,10 +44,17 @@ function getOptions(questionId) {
   ]).then(res => res[0] && res[0].options)
 }
 
-function getSolutions(questionId) {
+function getOptionSolutions(questionId) {
   return execute(`SELECT q.options_solutions FROM question q WHERE q.id = $1`, [
     questionId,
   ]).then(res => res[0] && res[0].options_solutions)
+}
+
+function getFreetextSolutions(questionId) {
+  return execute(
+    `SELECT q.free_text_solutions FROM question q WHERE q.id = $1`,
+    [questionId],
+  ).then(res => res[0] && res[0].free_text_solutions)
 }
 
 function insertQuestion({
@@ -175,7 +182,8 @@ module.exports = {
   getQuestions,
   getQuestionsByQuizId,
   getOptions,
-  getSolutions,
+  getOptionSolutions,
+  getFreetextSolutions,
   insertQuestion,
   createQuiz,
   updateQuiz,

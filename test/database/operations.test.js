@@ -3,7 +3,6 @@
 const chai = require('chai')
 const expect = chai.expect
 const chaiExclude = require('chai-exclude')
-chai.use(chaiExclude)
 const execSync = require('child_process').execSync
 const { pool } = require('../../src/database/database')
 const {
@@ -13,12 +12,15 @@ const {
   insertQuestion,
   getQuestions,
   getOptions,
-  getSolutions,
+  getOptionSolutions,
+  getFreetextSolutions,
   updateQuiz,
   updateQuestion,
   deleteQuiz,
   deleteQuestion,
 } = require('../../src/database/operations')
+
+chai.use(chaiExclude)
 
 Feature('Database operations', () => {
   before(prepareTempDatabase)
@@ -214,9 +216,14 @@ Feature('Database operations', () => {
       expect(options).to.eql(['asd', 'rty', 'cvb'])
     })
 
-    And('it should have solutions', async () => {
-      const solutions = await getSolutions(created.id)
+    And('it should have option solutions', async () => {
+      const solutions = await getOptionSolutions(created.id)
       expect(solutions).to.eql([2])
+    })
+
+    And('it should have free text solutions', async () => {
+      const solutions = await getFreetextSolutions(created.id)
+      expect(solutions).to.eql(['Karl Gustav', 'Silvia'])
     })
 
     let updated
