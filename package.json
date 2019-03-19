@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/*/*.test.js",
-    "dev": "NODE_ENV=dev nodemon app.js"
+    "dev": "cross-env NODE_ENV=dev nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
   "dependencies": {
     "apollo-server": "^2.3.3",
     "apollo-server-koa": "^2.3.3",
+    "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
     "graphql": "^14.1.1",
     "koa": "^2.7.0",
@@ -24,5 +25,10 @@
     "mocha": "^5.2.0",
     "mocha-cakes-2": "^3.3.0",
     "nodemon": "^1.18.9"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": false
   }
 }
